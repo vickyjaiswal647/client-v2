@@ -5,30 +5,30 @@ import './AnswerPage.css'
 
 const AnswerPage = () =>{
     const [enable,setEnable] = useState()
-    const [score,setScore] = useState(10)
+    const [score,setScore] = useState(0)
     const [quesList,setQuesList] = useState([
-        {Ques: "", Ans: "", quesType: 1},
-        {Ques: "", Ans: "", quesType: 2}
+        {answer:'',questionType:'',questionId:{qStatement:''}}
     ])
 
-    const getQuestion = async() => {
-        // const response = await fetch(`/users/student/attempt-test/${localStorage.getItem('stuId')}`,{
-        //     mode:'cors',
-        //     headers : {
-        //         "Content-Type" : "application/json",
-        //         'Accept': 'application/json',
-        //         'x-auth-token':localStorage.getItem('token')
-        //     },
-        // });
-        // const data = await response.json();
-        // if(data.status.code === 200){
-        //     setQuesList(data.info);
-        //     setScore(data.info);
-        // } else {
-        //     setEnable(false);
-        //     diffToast(data.status.message)
-        //     setTimeout(function(){ history.push('/profilePage'); }, 3000);
-        // }
+    const getAnswerlist = async() => {
+        const userId = localStorage.getItem('stuId');
+        const testName = localStorage.getItem('label');
+        console.log(userId,testName);
+        const response = await fetch(`/users/admin/see-answer`,{
+            method:"POST",
+            mode:'cors',
+            headers : {
+                "Content-Type" : "application/json",
+                'Accept': 'application/json',
+                'x-auth-token':localStorage.getItem('token')
+            },
+            body:JSON.stringify({userId,testName})
+        });
+        const data = await response.json();
+        console.log(data.info);
+        if(data.status.code === 200){
+            setQuesList(data.info)
+        }
     }
     
     // const diffToast = (message) => {
@@ -37,19 +37,24 @@ const AnswerPage = () =>{
     //     })
     // }
 
-    const handleEditBUtton = () =>{
+    const handleEditBUtton = async() =>{
         setEnable(!enable);
-        //const testScore = score;
-        // const response = await fetch(`/users/student/attempt-test/${localStorage.getItem('stuId')}`,{
-        //     method:'POST'
-        //     mode:'cors',
-        //     headers : {
-        //         "Content-Type" : "application/json",
-        //         'Accept': 'application/json',
-        //         'x-auth-token':localStorage.getItem('token')
-        //     },
-        //     body:JSON.stringify({testScore})
-        // });
+        const testScore = score;
+        const userId = localStorage.getItem('stuId');
+        const testName = localStorage.getItem('label');
+        if(enable){
+            console.log(testScore,userId,testName);
+            const codeResponse = await fetch("users/admin/get-test-result", {
+                method: 'POST',
+                mode: 'cors',
+                headers: {
+                    "Content-Type": "application/json",
+                    'Accept': 'application/json',
+                    'x-auth-token': localStorage.getItem('token')
+                },
+                body:JSON.stringify({testScore,userId,testName})
+            });
+        }
         // const data = await response.json();
         // if(data.status.code === 200){
         //     diffToast(data.state.message);
@@ -69,7 +74,7 @@ const AnswerPage = () =>{
     }
 
     React.useEffect(()=>{
-        getQuestion();
+        getAnswerlist();
         //console.log()
     },[])
     return(
@@ -82,13 +87,13 @@ const AnswerPage = () =>{
                 return(
                     <div className='questions'>
                         <div className='quesType'>
-                            { data.quesType === 1 ? <p>Short Answer Type</p> : <p >Long Answer Type</p> }
+                            { data.questionType == 0 ? <p>MCQ</p> : data.questionType == 1 ? <p>Short Answer Type</p> :<p >Long Answer Type</p>}
                         </div>
                         <h2>Question:</h2>
-                        <p className='quesPara'>{data.Ques}</p>
+                        <p className='quesPara'>{data.questionId.qStatement}</p>
                         <hr/>
                         <h2>Answer:</h2>
-                        <p className='ansPara'>{data.Ans}</p>
+                        <p className='ansPara'>{data.answer}</p>
                     </div>
                 )
             })}            

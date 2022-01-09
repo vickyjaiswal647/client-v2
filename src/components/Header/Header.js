@@ -23,7 +23,7 @@ const Header = ({state, changed}) => {
                 <ul>
                     <li><Link className = "nvbar" to = '/'>Categories<KeyboardArrowDownIcon/></Link></li>
                     <li><Link className = "nvbar" to = '/newsFeed1'>Articles<KeyboardArrowDownIcon/></Link></li>
-                    <li><Link className = "nvbar" to = '/'>Posts<AllInboxIcon/></Link></li>
+                    <li><Link className = "nvbar" to = {{pathname:'https://boostmind-chat.herokuapp.com/'}} target="_blank">Chat Room<AllInboxIcon/></Link></li>
                 </ul>
             </div>
             <div className = "navbarAccount">

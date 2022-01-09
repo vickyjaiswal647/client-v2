@@ -17,13 +17,10 @@ const useStyles = makeStyles((theme) => ({
 const StudentList = () => {
 
     const classes = useStyles();
-    const [List, setList] = useState([
-        { stuId: "", name: "", email: "" },
-        { stuId: "", name: "", email: "" },
-        { stuId: "", name: "", email: "" }])
+    const [List, setList] = useState([{ fullname: "", email: "" , testScore : '',_id:""}])
 
     const [dropDownTestName, setDropDownTestName] = useState([{
-        value: '', label: ''
+        value: '', label:''
     }])
 
     const [testCode, setTestCode] = useState('')
@@ -31,9 +28,9 @@ const StudentList = () => {
     const testCodes = async (e) => {
         // e.preventDefault();
         setTestCode(e.value);
-        console.log(e.value);
+        localStorage.setItem('label',e.label);
         const testCode = e.value
-        const codeResponse = await fetch("users/admin/get-test-list", {
+        const codeResponse = await fetch("users/admin/get-test-result", {
             method: 'POST',
             mode: 'cors',
             headers: {
@@ -44,10 +41,10 @@ const StudentList = () => {
             body:JSON.stringify({testCode})
         });
         const data = await codeResponse.json();
+        console.log(data)
         if (data.status.code === 200) {
             setList(data.info);
         }
-        console.log(data);
     }
 
     const getTestCode = async () => {
@@ -64,10 +61,8 @@ const StudentList = () => {
         const data = await codeResponse.json();
         if (data.status.code === 200) {
             setDropDownTestName(data.info);
-
         }
         console.log(data);
-
     }
 
     React.useEffect(() => {
@@ -114,11 +109,11 @@ const StudentList = () => {
 
                             <tr className="studentData">
 
-                                <td>{data.name}</td>
+                                <td>{data.fullname}</td>
                                 <td>{data.email}</td>
                                 <td>
                                     <Link to='/answerPage'>
-                                        <Button className="launchButton" type="button" variant="contained" color='primary' size="lg" onClick={() => { { localStorage.setItem('stuId', data.stuId) } }} active>Launch</Button>
+                                        <Button className="launchButton" type="button" variant="contained" color='primary' size="lg" onClick={() => { { localStorage.setItem('stuId', data._id) } }} active>Launch</Button>
                                     </Link>
                                 </td>
                             </tr>

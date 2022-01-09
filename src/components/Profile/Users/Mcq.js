@@ -5,6 +5,7 @@ import Radio from '@material-ui/core/Radio';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import './mcq.css';
+import {useHistory} from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import ReactPaginate from "react-paginate";
@@ -19,6 +20,8 @@ const NewQuestion = () => {
         _id:'',qStatement:'',option1:'',option2:'',option3:'',option4:'',type:''
     })
     const [testNames,setTestName] = useState('TestName')
+    const [testCodes, setTestCode] = useState('')
+    const history = useHistory();
     const [users, setUsers] = useState(1);
     const [pageNumber, setPageNumber] = useState(0);
     const usersPerPage = 1;
@@ -43,16 +46,15 @@ const NewQuestion = () => {
             setQuestion(data.info.quest);
             setUsers(data.info.totalQuest);
             setTestName(data.info.testName);
+            setTestCode(data.info.testCode);
             //console.log(data.info.quest._id);
             if(data.info.answer){
                 setAnswer({ _id: data.info.quest._id, ans: data.info.answer})
             }
             //setEnable(true);
         } else {
-            //setEnable(false);
-            //diffToast(data.status.message)
-            //setTimeout(function(){ history.push('/profilePage'); }, 3000);
-            console.log(data.status.message)
+            errormgs(data.status.message);
+            setTimeout(function(){ history.push('/profilePage'); },3000);
         }
     }
 
@@ -77,12 +79,14 @@ const NewQuestion = () => {
     }
 
     const diffToast = (message) => {
+        //console.log(message)
         toast.success(message,{
             position:"top-right",autoClose: 3000
         })
     }
     
       const errormgs = (message) => {
+          //console.log(message)
           toast.error(message,{
               position:"top-right",autoClose: 3000
           })
@@ -92,8 +96,6 @@ const NewQuestion = () => {
         const {_id, ans} = answer;
         const testName = testNames;
         const {type} = question;
-        console.log("Submitting Answer to Backend")
-        console.log(_id,ans,testName,type);
         const response = await fetch('/users/student/create-answer',{
             method:'POST',
             mode:'cors',
@@ -105,8 +107,30 @@ const NewQuestion = () => {
             body:JSON.stringify({_id,ans,testName,type})
         });
         const data = await response.json();
-        
         setAnswer({_id:'',ans:''});
+    }
+
+    const finalSubmitAnswer = async() => {
+        const testName = testNames;
+        const testCode = testCodes;
+        const response = await fetch('/users/student/submit-test',{
+            method: 'POST',
+            mode: 'cors',
+            headers : {
+                "Content-Type" : "application/json",
+                'Accept' : 'application/json',
+                'x-auth-token' : localStorage.getItem('token')
+            },
+            body:JSON.stringify({testName,testCode})
+        });
+        const data = await response.json();
+        if(data.status.code === 200){
+            diffToast(data.status.message);
+            setTimeout(function(){ history.push('/profilePage'); },3000);
+        } else {
+            // errormgs(data.status.message);
+            // setTimeout(function(){ history.push('/profilePage'); },3000);
+          }
     }
 
 
@@ -186,10 +210,11 @@ const NewQuestion = () => {
                     </div>
                 </>}
                 <div className = 'btn'>
-                    <Button  onClick = {submitAnswer} type='submit' variant='contained' color = 'primary' size = 'large'>Final Submit</Button>
+                    <Button  onClick = {finalSubmitAnswer} type='submit' variant='contained' color = 'primary' size = 'large'>Final Submit</Button>
                 </div>
                 
             </div>
+            <ToastContainer/>
         </div>
     )
 }
