@@ -113,7 +113,7 @@ const StudentList = () => {
                                 <td>{data.email}</td>
                                 <td>
                                     <Link to='/answerPage'>
-                                        <Button className="launchButton" type="button" variant="contained" color='primary' size="lg" onClick={() => { { localStorage.setItem('stuId', data._id) } }} active>Launch</Button>
+                                        <Button className="launchButton" type="button" variant="contained" color='primary' size="lg" onClick={() => { { localStorage.setItem('stuId', data._id) } }} active>Review</Button>
                                     </Link>
                                 </td>
                             </tr>

@@ -5,7 +5,7 @@ const Joining = () => {
     return (
         <div className = 'join'>
             <div>
-                <img className = "image" src = "https://www.procpr.org/blog/wp-content/uploads/2020/07/cpr-instructor.png" alt = "instructor page"/>
+                <img className = "image" src = "https://www.meteoricsolutions.com/wp-content/uploads/2019/12/89.jpg" alt = "instructor page"/>
             </div>
             <div className = 'info'>
                 <h1>Become an instructor</h1>

@@ -44,6 +44,18 @@ const UploadVideo1 = () => {
 
     const semesterHandler = (e) => {
         setSemester(e.value);
+        // const semester = e.value;
+        // const response = await fetch("/users/admin/get-subject",{
+        //     method : "POST",
+        //     mode:"cors",
+        //     header:{
+        //         "Content-Type" : "application/json",
+        //         'Accept': 'application/json',
+        //         'x-auth-token':localStorage.getItem('token')
+        //     },
+        //     body:JSON.stringify({semester,branch})  
+        // })
+        // console.log(await response.json());
     }
 
     const branchHandler = (e) => {
@@ -105,7 +117,6 @@ const UploadVideo1 = () => {
         if(data.status.code === 200){
             setDropDownSubject(data.info);
         }
-        console.log(data.info)
     }
 
     useEffect(()=>{

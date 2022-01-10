@@ -39,20 +39,20 @@ const AnswerPage = () =>{
 
     const handleEditBUtton = async() =>{
         setEnable(!enable);
-        const testScore = score;
-        const userId = localStorage.getItem('stuId');
+        const newScore = score;
+        const user = localStorage.getItem('stuId');
         const testName = localStorage.getItem('label');
         if(enable){
-            console.log(testScore,userId,testName);
-            const codeResponse = await fetch("users/admin/get-test-result", {
-                method: 'POST',
+            console.log(newScore,user,testName);
+            const codeResponse = await fetch("users/admin/update-score", {
+                method: 'PUT',
                 mode: 'cors',
                 headers: {
                     "Content-Type": "application/json",
                     'Accept': 'application/json',
                     'x-auth-token': localStorage.getItem('token')
                 },
-                body:JSON.stringify({testScore,userId,testName})
+                body:JSON.stringify({newScore,user,testName})
             });
         }
         // const data = await response.json();

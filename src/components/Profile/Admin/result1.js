@@ -1,10 +1,11 @@
-import React from 'react'
+import React,{useState,useEffect} from 'react'
 import MaterialTable from 'material-table';
 import './result.css'
 import { makeStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
+import Select from 'react-select';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -14,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
       width: '25ch',
     },
   },
+  select: {
+    margin: theme.spacing(0.6),
+    width: '25%',
+}
 }));
 
 const Result1 = () => {
@@ -23,6 +28,10 @@ const Result1 = () => {
 
     const [data, setData] = React.useState([{
         fullname:'',email:'',testScore:''
+    }])
+
+    const [dropDownTestName, setDropDownTestName] = useState([{
+        value: '', label:''
     }])
 
     const columns = [
@@ -50,8 +59,9 @@ const Result1 = () => {
     }
 
     const handleData = async(e) => {
-        e.preventDefault();
-        const testCode = code
+        //e.preventDefault();
+        setCode(e.value)
+        const testCode = e.value
         const response = await fetch('/users/admin/get-test-result',{
             method:"POST",
             mode:'cors',
@@ -71,16 +81,37 @@ const Result1 = () => {
         }
     }
 
-    const onChangehandler = (e) => {
-        setCode(e.target.value);
+    // const onChangehandler = (e) => {
+    //     setCode(e.target.value);
+    // }
+
+    const getTestCode = async () => {
+        const codeResponse = await fetch("users/admin/get-test-list", {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                "Content-Type": "application/json",
+                'Accept': 'application/json',
+                'x-auth-token': localStorage.getItem('token')
+            },
+            
+        });
+        const data = await codeResponse.json();
+        if (data.status.code === 200) {
+            setDropDownTestName(data.info);
+        }
+        console.log(data);
     }
+
+    React.useEffect(() => {
+        // console.log(questiontype)
+        getTestCode();
+    }, [])
     
     return (
         <div>
             <h1 className = "result">Test Result</h1>
-            <form method = "POST" className = {classes.root} autoComplete = "off" onSubmit = {handleData}>
-                <TextField id="standard-basic" value = {code} onChange = {onChangehandler} label="EnterTestCode" />
-            </form>
+            <Select className={classes.select} onChange={handleData} placeholder="Select Test Name" options={dropDownTestName} />
             <MaterialTable onRowClick={(console.log("Hello"))} title = "Student Performance" data = {data} columns = {columns} options = {{paging : false , exportButton:true }}/>
             <ToastContainer/>
         </div>

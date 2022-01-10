@@ -36,27 +36,27 @@
 .studentLabels{
     display: flex;
     /* align-items: flex-start; */
-    margin-right: 75%;
-    column-gap: 115%;
+    margin-left: 7%;
+    column-gap: 30%;
 }
 
 .studentData{
     padding-top: 1%;
     display:flex;
-    column-gap: 17%;
+    column-gap: 21%;
     /* column-gap: 190px; */
     padding-bottom: 1%;
 }
 
 
 .launchButton {
-    width: 25%;
+    width: 90%;
     padding: 10px;
-    height:10%;
+    height:90%;
     transition: transform 0.5s ease-out;
-    
+    text-decoration: none;
 }
 .launchButton:hover{
     transition: scale(1.08);
-    color: rgb(250, 46, 46);
+    color: rgb(131, 138, 138);
 }
